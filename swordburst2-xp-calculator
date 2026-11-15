@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#1a1a2e">
+<title>Swordburst 2 XP Calculator</title>
+<style>
+  :root,
+  [data-theme="dark"] {
+    --bg: #1a1a2e;
+    --card: #16213e;
+    --card-soft: #0f1830;
+    --accent: #e94560;
+    --accent-soft: #ff8fa3;
+    --text: #e9e9f2;
+    --muted: #8b90a8;
+    --line: rgba(255, 255, 255, 0.07);
+
+    --glow-1: rgba(233, 69, 96, 0.16);
+    --glow-2: rgba(15, 52, 96, 0.55);
+    --input-bg: #0f1830;
+    --input-bg-focus: #121d38;
+    --input-text: #ffffff;
+    --input-border: rgba(255, 255, 255, 0.1);
+    --input-border-hover: rgba(255, 255, 255, 0.2);
+    --heading-muted: #a5a8bd;
+    --label-strong: #c6c9da;
+    --soft-surface: rgba(255, 255, 255, 0.03);
+    --soft-border: rgba(255, 255, 255, 0.08);
+    --shadow: 0 24px 48px -32px rgba(0, 0, 0, 0.9);
+    --button-gradient-end: #ff6b81;
+    color-scheme: dark;
+  }
+
+  [data-theme="light"] {
+    --bg: #f4f5fa;
+    --card: #ffffff;
+    --card-soft: #eef0f7;
+    --accent: #d63350;
+    --accent-soft: #c22a48;
+    --text: #1a1a2e;
+    --muted: #6b7088;
+    --line: rgba(0, 0, 0, 0.08);
+
+    --glow-1: rgba(214, 51, 80, 0.12);
+    --glow-2: rgba(126, 156, 226, 0.24);
+    --input-bg: #f7f8fd;
+    --input-bg-focus: #ffffff;
+    --input-text: #1a1a2e;
+    --input-border: rgba(0, 0, 0, 0.12);
+    --input-border-hover: rgba(0, 0, 0, 0.22);
+    --heading-muted: #4f5470;
+    --label-strong: #3a3f57;
+    --soft-surface: rgba(0, 0, 0, 0.035);
+    --soft-border: rgba(0, 0, 0, 0.08);
+    --shadow: 0 22px 44px -34px rgba(24, 28, 54, 0.28);
+    --button-gradient-end: #e8556d;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(900px 520px at 88% -10%, var(--glow-1), transparent 62%),
+      radial-gradient(760px 520px at -12% 108%, var(--glow-2), transparent 62%),
+      var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: rgba(233, 69, 96, 0.45); color: #fff; }
+
+  .page { max-width: 1140px; margin: 0 auto; padding: 40px 20px 64px; }
+
+  .hero { margin-bottom: 28px; }
+
+  .hero-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .hero-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .lang-switch select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 9px 30px 9px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--input-border);
+    background-color: var(--card-soft);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a5a8bd' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 11px center;
+    background-size: 10px 7px;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .lang-switch select:hover { border-color: var(--input-border-hover); }
+  .lang-switch select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.16);
+  }
+
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--input-border);
+    background: var(--card-soft);
+    color: var(--text);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+
+  .theme-toggle:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .theme-toggle #themeIcon { display: block; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(233, 69, 96, 0.35);
+    background: rgba(233, 69, 96, 0.08);
+    color: var(--accent-soft);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    margin: 16px 0 10px;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    max-width: 780px;
+  }
+
+  .hero h1 .accent { color: var(--accent); }
+  .hero p { margin: 0; max-width: 720px; color: var(--heading-muted); font-size: 1.04rem; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 22px;
+    align-items: start;
+  }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .panel > h2 { margin: 0 0 20px; font-size: 1.22rem; letter-spacing: -0.01em; }
+
+  .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; min-width: 0; }
+  .field-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+  .field label { font-size: 0.9rem; font-weight: 600; color: var(--label-strong); }
+
+  .label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+  .hint { margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--muted); }
+
+  .field input,
+  .field select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 13px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--input-text);
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  }
+
+  .field input:hover, .field select:hover { border-color: var(--input-border-hover); }
+  .field input:focus, .field select:focus {
+    border-color: var(--accent);
+    background: var(--input-bg-focus);
+    box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.16);
+  }
+
+  .field input::placeholder { color: var(--muted); font-weight: 500; }
+  .field input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+  .field input[type="number"]::-webkit-outer-spin-button,
+  .field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .field select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 44px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a5a8bd' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px 8px;
+    font-size: 1.02rem;
+    font-weight: 600;
+  }
+
+  .field select option { background: var(--card-soft); color: var(--input-text); }
+
+  .mob-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    padding: 10px 12px;
+    border-radius: 11px;
+    border: 1px solid var(--soft-border);
+    background: var(--soft-surface);
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mob-meta[hidden] { display: none; }
+  .mob-meta strong { color: var(--text); font-weight: 600; }
+
+  .mob-wiki {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .mob-wiki[hidden] { display: none; }
+  .mob-wiki a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    color: var(--accent-soft);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent-soft);
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .mob-wiki a::after { content: '↗'; font-size: 0.85em; opacity: 0.8; }
+  .mob-wiki a:hover { color: var(--text); border-color: var(--text); }
+  .mob-wiki a:focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 3px; border-radius: 2px; }
+
+  .quick { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .quick-label { font-size: 0.78rem; color: var(--muted); }
+
+  .chip {
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(233, 69, 96, 0.35);
+    background: rgba(233, 69, 96, 0.08);
+    color: var(--accent-soft);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  }
+
+  .chip:hover { background: rgba(233, 69, 96, 0.2); border-color: var(--accent); color: var(--text); }
+  .chip:active { transform: translateY(1px); }
+  .chip:focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 2px; }
+
+  .calc-btn {
+    width: 100%;
+    margin-top: 4px;
+    padding: 16px 20px;
+    border: 0;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--button-gradient-end));
+    color: #fff;
+    font: inherit;
+    font-size: 1.04rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow: 0 14px 26px -14px rgba(233, 69, 96, 0.85);
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+  }
+
+  .calc-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 30px -14px rgba(233, 69, 96, 0.95); filter: brightness(1.04); }
+  .calc-btn:active { transform: translateY(0); }
+  .calc-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+  .error {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 13px;
+    border: 1px solid rgba(233, 69, 96, 0.5);
+    background: rgba(233, 69, 96, 0.1);
+    color: var(--accent-soft);
+    font-size: 0.9rem;
+  }
+
+  .error strong { display: block; margin-bottom: 6px; color: var(--accent-soft); }
+  .error ul { margin: 0; padding-left: 18px; }
+  .error li + li { margin-top: 4px; }
+
+  .results { display: flex; flex-direction: column; gap: 16px; }
+
+  .results-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    scroll-margin-top: 20px;
+  }
+
+  .results-head h2 { margin: 0; font-size: 1.22rem; letter-spacing: -0.01em; }
+
+  .live {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--soft-border);
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .result-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding: 20px;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow);
+  }
+
+  .card-wide { grid-column: 1 / -1; }
+
+  .label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .value {
+    font-size: clamp(1.7rem, 3.4vw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    word-break: break-word;
+  }
+
+  .value small { margin-left: 2px; font-size: 0.5em; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-soft); }
+  .value.is-text { padding: 4px 0; font-size: 1.18rem; letter-spacing: 0; color: var(--accent-soft); }
+
+  .sub { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .progress-card { gap: 12px; }
+  .progress-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .pct { font-size: 1.08rem; font-weight: 800; color: var(--accent-soft); font-variant-numeric: tabular-nums; }
+
+  .bar { height: 14px; border-radius: 999px; background: var(--line); overflow: hidden; }
+  .bar-fill {
+    width: 0;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--button-gradient-end));
+    transition: width 0.4s ease;
+  }
+
+  .progress-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .result-grid.is-invalid .card { opacity: 0.55; }
+
+  /* ---------- Футер ---------- */
+  .site-footer {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: var(--soft-surface);
+    border: 1px solid var(--soft-border);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  }
+
+  .footer-btn:hover {
+    background: var(--card-soft);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .footer-btn.discord-btn {
+    background: #5865F2;
+    border-color: #5865F2;
+    color: #fff;
+  }
+
+  .footer-btn.discord-btn:hover {
+    background: #4752C4;
+    border-color: #4752C4;
+  }
+
+  .dev-credits {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .dev-names {
+    color: var(--text);
+    font-weight: 600;
+    background: var(--soft-surface);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--soft-border);
+    margin-left: 4px;
+    display: inline-block;
+  }
+
+  .formula {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .page { padding-top: 28px; }
+  }
+
+  @media (max-width: 560px) {
+    .page { padding: 24px 14px 48px; }
+    .panel { padding: 18px; border-radius: 18px; }
+    .field-row { grid-template-columns: 1fr; gap: 0; }
+    .result-grid { grid-template-columns: 1fr; }
+    .card { padding: 18px; }
+    .value { font-size: 1.9rem; }
+    .results-head { flex-wrap: wrap; }
+    .footer-actions { flex-direction: column; width: 100%; }
+    .footer-btn { width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <div class="hero-top">
+      <div class="badge">Swordburst 2 · Roblox</div>
+      <div class="hero-tools">
+        <label class="lang-switch">
+          <span data-i18n="language">Language</span>
+          <select id="langSelect">
+            <option value="en" selected>English</option>
+            <option value="be">Беларуская</option>
+            <option value="ru">Русский</option>
+            <option value="uk">Українська</option>
+            <option value="kk">Қазақша</option>
+          </select>
+        </label>
+        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </div>
+    <h1><span data-i18n="heroTitleA">XP</span> <span class="accent" data-i18n="heroTitleB">calculator</span></h1>
+    <p data-i18n="heroText">Find out how many mobs you need to kill to reach your target level — and how much XP is left.</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel" aria-labelledby="inputs-title">
+      <h2 id="inputs-title" data-i18n="inputsTitle">Your data</h2>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="currentLevel" data-i18n="currentLevel">Current level</label>
+          <input id="currentLevel" type="number" min="1" max="450" step="1" value="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="currentXP" data-i18n="currentXP">XP on this level</label>
+          <input id="currentXP" type="number" min="0" step="1" value="0" placeholder="0" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label-row">
+          <label for="targetLevel" data-i18n="targetLevel">Target level</label>
+          <span class="hint" data-i18n="targetHint">Empty = next level</span>
+        </div>
+        <input id="targetLevel" type="number" min="1" max="450" step="1" placeholder="e.g. 50" data-i18n-placeholder="targetPlaceholder" inputmode="numeric">
+        <div class="quick" role="group" aria-label="Quick targets" data-i18n-aria-label="quickAria">
+          <span class="quick-label" data-i18n="quickTargets">Quick targets:</span>
+          <button type="button" class="chip" data-step="1" data-i18n="quick1">+1 level</button>
+          <button type="button" class="chip" data-step="5" data-i18n="quick5">+5 levels</button>
+          <button type="button" class="chip" data-step="10" data-i18n="quick10">+10 levels</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="floor" data-i18n="floor">Floor</label>
+        <select id="floor"></select>
+      </div>
+
+      <div class="field">
+        <label for="mob" data-i18n="mobSource">Mob / XP source</label>
+        <select id="mob"></select>
+        <div class="mob-meta" id="mobMeta" hidden>
+          <span><span data-i18n="hp">HP</span>: <strong id="mobHP">—</strong></span>
+          <span><span data-i18n="respawn">Respawn</span>: <strong id="mobRespawn">—</strong></span>
+        </div>
+        <div class="mob-wiki" id="mobWikiRow" hidden>
+          <span data-i18n="wikiLabel">On the wiki:</span>
+          <a id="mobWiki" href="https://swordburst2.fandom.com/wiki/Swordburst_2_Wiki" target="_blank" rel="noopener noreferrer">—</a>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="xpPerMob" data-i18n="xpPerMob">XP per mob</label>
+        <input id="xpPerMob" type="number" min="1" step="1" value="4" inputmode="numeric">
+        <p class="hint" data-i18n="xpPerMobHint">Enter any value if farming a boss or using boosts.</p>
+      </div>
+
+      <div class="field">
+        <label for="boostMultiplier" data-i18n="boostLabel">XP Boost</label>
+        <select id="boostMultiplier">
+          <option value="1" selected>x1 (no boost)</option>
+          <option value="2">x2</option>
+          <option value="3">x3</option>
+        </select>
+      </div>
+
+      <button class="calc-btn" id="calcBtn" type="button" data-i18n="calc">Calculate</button>
+
+      <div class="error" id="errorBox" role="alert" hidden>
+        <strong data-i18n="errorTitle">Check the data:</strong>
+        <ul id="errorList"></ul>
+      </div>
+    </section>
+
+    <section class="results" aria-labelledby="results-title">
+      <div class="results-head" id="resultsTitle">
+        <h2 id="results-title" data-i18n="resultsTitle">Results</h2>
+        <span class="live" data-i18n="autoRecalc">auto-recalc</span>
+      </div>
+
+      <div class="result-grid" id="resultGrid">
+        <article class="card">
+          <span class="label" data-i18n="xpToGoal">XP to goal</span>
+          <span class="value"><span id="xpNeeded">—</span> <small>XP</small></span>
+          <span class="sub" id="xpSub">—</span>
+        </article>
+
+        <article class="card">
+          <span class="label" data-i18n="mobsToKill">Mobs to kill</span>
+          <span class="value"><span id="mobsCount">—</span> <small data-i18n="unitPcs">pcs.</small></span>
+          <span class="sub" id="mobsSub">—</span>
+        </article>
+
+        <article class="card card-wide">
+          <span class="label" data-i18n="levelsGained">Levels gained</span>
+          <span class="value" id="levelsGained">—</span>
+          <span class="sub" id="levelsSub">—</span>
+        </article>
+
+        <article class="card card-wide progress-card">
+          <div class="progress-top">
+            <span class="label" data-i18n="progress">Progress to goal</span>
+            <span class="pct" id="progressPct">—</span>
+          </div>
+          <div class="bar" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progress to goal" data-i18n-aria-label="progress">
+            <div class="bar-fill" id="barFill"></div>
+          </div>
+          <div class="progress-foot">
+            <span id="progressFrom">Lv. —</span>
+            <span id="progressXP">— / — XP</span>
+            <span id="progressTo">Lv. —</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-actions">
+      <a href="https://www.roblox.com/games/659222129/Swordburst-2" class="footer-btn" target="_blank" rel="noopener noreferrer">
+        <span data-i18n="playGame">Play Swordburst 2</span>
+      </a>
+      <a href="https://discord.com/invite/sb2" class="footer-btn discord-btn" target="_blank" rel="noopener noreferrer">
+        <span data-i18n="joinDiscord">Join Discord</span>
+      </a>
+    </div>
+    
+    <div class="dev-credits">
+      <span data-i18n="subscribeDevs">Subscribe to developers:</span>
+      <span class="dev-names">@Abstract_Alex / @Meta_Maxim / @buildermans_son</span>
+    </div>
+
+    <p class="formula" data-i18n="footer">SB2 formula: XP to next level = 3 × n × (n + 1) + 1 · Max level — 450</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var MAX_LEVEL = 450;
+
+  function m(name, hp, respawn, xp) {
+    return {
+      name: name,
+      hp: hp,
+      respawn: respawn,
+      xp: xp
+    };
+  }
+
+  var FLOORS = [
+    {
+      id: 'f1',
+      floor: 1,
+      name: 'Virhst Woodlands',
+      level: '1+',
+      mobs: [
+        m('Frenzy Boar', 50, 30, 4),
+        m('Hermit Crab', 65, 30, 6),
+        m('Wolf', 120, 30, 10),
+        m('Bear', 200, 30, 16),
+        m('Earthen Boar', 130, 30, 14),
+        m('Earthen Crab', 150, 30, 16),
+        m('Draconite', 250, 30, 20),
+        m('Ruin Knight', 275, 30, 20),
+        m('Ruined Kobold Knight', 450, 30, 30),
+        m('Ruin Kobold Knight', 450, 30, 30)
+      ],
+      bosses: [
+        m('Dire Wolf', 1500, 45, 70),
+        m('Ruined Kobold Lord', 2500, 45, 100),
+        m('Rahjin the Thief King', 3500, 90, 170)
+      ]
+    },
+    {
+      id: 'f2',
+      floor: 2,
+      name: 'Redveil Grove',
+      level: '15–24+',
+      mobs: [
+        m('Leaf Beetle', 600, 30, 34),
+        m('Leaf Ogre', 625, 30, 34),
+        m('Leafray', 750, 30, 50),
+        m('Pearl Keeper', 1150, 30, 64),
+        m('Wasp', 1200, 30, 60),
+        m('Giant Ruins Hornet', 1400, 30, 100),
+        m('Bushback Tortoise', 1500, 30, 110)
+      ],
+      bosses: [
+        m('Redthorn Tortoise', 3500, 45, 155),
+        m('Pearl Guardian', 5000, 45, 180),
+        m('Borik the BeeKeeper', 7000, 90, 290)
+      ]
+    },
+    {
+      id: 'f3',
+      floor: 3,
+      name: 'Avalanche Expanse',
+      level: '24–50+',
+      mobs: [
+        m('Snowgre', 1150, 30, 80),
+        m('Angry Snowman', 1950, 30, 100),
+        m('Icewhal', 2400, 30, 120),
+        m('Snowhorse', 1500, 30, 100),
+        m('Ice Walker', 3200, 30, 160),
+        m('Ice Elemental', 3650, 30, 170)
+      ],
+      bosses: [
+        m('Alpha Icewhal', 10000, 45, 250),
+        m('Qerach The Forgotten Golem', 20000, 45, 300),
+        m("Ra'thae the Ice King", 33000, 90, 500)
+      ]
+    },
+    {
+      id: 'f4',
+      floor: 4,
+      name: 'Hidden Wilds',
+      level: '35–40+',
+      mobs: [
+        m('Wattlechin Crocodile', 2650, 30, 180),
+        m('Bamboo Spiderling', 3000, 30, 150),
+        m('Treehorse', 3000, 30, 190),
+        m('Treeray', 4000, 30, 210),
+        m('Birchman', 4500, 30, 200),
+        m('Boneling', 6000, 30, 230),
+        m('Bamboo Spider', 7750, 30, 260),
+        m('Dungeon Dweller', 9250, 30, 280),
+        m('Lion Protector', 15000, 30, 400)
+      ],
+      bosses: [
+        m('Rotling', 28000, 45, 500),
+        m('Irath the Lion', 65000, 90, 850)
+      ]
+    },
+    {
+      id: 'f5',
+      floor: 5,
+      name: 'Desolate Dunes',
+      level: '40–50+',
+      mobs: [
+        m('Girdled Lizard', 6000, 30, 135),
+        m('Angry Cactus', 7750, 30, 150),
+        m('Desert Vulture', 9250, 30, 155),
+        m('Giant Centipede', 10000, 30, 195),
+        m('Sand Scorpion', 11000, 30, 195),
+        m('Green Patrolman', 10000, 30, 205),
+        m('Patrolman Elite', 12000, 30, 220),
+        m('Centaurian Defender', 20000, 30, 300)
+      ],
+      bosses: [
+        m('Fire Scorpion', 65000, 45, 600),
+        m("Sa'jun the Centurian Chieftain", 125000, 90, 1088)
+      ]
+    },
+    {
+      id: 'f7',
+      floor: 7,
+      name: 'Entoloma Gloomlands',
+      level: '55–65+',
+      mobs: [
+        m('Jelly Wisp', 10000, 30, 128),
+        m('Firefly', 12000, 30, 131),
+        m('Shroom Back Clam', 15000, 30, 135),
+        m('Gloom Shroom', 17500, 30, 143),
+        m('Horned Sailfin Iguana', 19000, 30, 158),
+        m('Blightmouth', 21000, 30, 170),
+        m('Snapper', 24000, 30, 203)
+      ],
+      bosses: [
+        m('Frogazoid', 90000, 45, 900),
+        m('Smashroom the Mushroom Behemoth', 162500, 90, 1838)
+      ]
+    },
+    {
+      id: 'f8',
+      floor: 8,
+      name: 'Blooming Plateau',
+      level: '65–75+',
+      mobs: [
+        m('Giant Praying Mantis', 24000, 30, 165),
+        m('Petal Knight', 30000, 30, 180),
+        m('Leaf Rhino', 35000, 30, 195),
+        m('Sky Raven', 37500, 30, 203),
+        m('Forest Wanderer', 41000, 30, 203),
+        m('Wingless Hippogriff', 45500, 30, 203),
+        m('Dungeon Crusader', 95000, 30, 248)
+      ],
+      bosses: [
+        m('Hippogriff', 275000, 45, 600),
+        m('Formaug the Jungle Giant', 375000, 90, 2338)
+      ]
+    },
+    {
+      id: 'f9',
+      floor: 9,
+      name: "Va' Rok",
+      level: '75–85+',
+      mobs: [
+        m('Batting Eye', 41000, 30, 213),
+        m('Lingerer', 50000, 30, 230),
+        m('Fishrock Spider', 55000, 30, 221),
+        m('Undead Warrior', 77000, 30, 255),
+        m('Reptasaurus', 90000, 30, 264),
+        m('Ent', 135000, 30, 281),
+        m('Enraged Lingerer', 65000, 30, 230),
+        m('Undead Berserker', 135000, 30, 281)
+      ],
+      bosses: [
+        m('Gargoyle Reaper', 350000, 45, 1046),
+        m('Polyserpant', 400000, 45, 893),
+        m('Mortis the Flaming Sear', 800000, 90, 8922)
+      ]
+    },
+    {
+      id: 'f10',
+      floor: 10,
+      name: 'Transylvania',
+      level: '85–100+',
+      mobs: [
+        m('Minion', 50000, 30, 203),
+        m('Shady Villager', 50000, 30, 338),
+        m('Winged Minion', 60000, 30, 218),
+        m('Grunt', 70000, 30, 233),
+        m('Guard Hound', 82500, 30, 248),
+        m('Clay Giant', 95000, 30, 337),
+        m('Wendigo', 107500, 30, 263),
+        m('Undead Servant', 175000, 30, 507)
+      ],
+      bosses: [
+        m('Baal, The Tormentor', 550000, 45, 1087),
+        m('Grim the Overseer', 1175000, 90, 10320)
+      ]
+    },
+    {
+      id: 'f11',
+      floor: 11,
+      name: 'Hypersiddia',
+      level: '110+',
+      mobs: [
+        m('Reaper', 70000, 30, 450),
+        m('Elite Reaper', 140000, 30, 575),
+        m('Sentry', 25000, 30, 300),
+        m('Watcher', 125000, 30, 550),
+        m('Soul Eater', 90500, 30, 475),
+        m('Command Falcon', 101250, 30, 500),
+        m('Armageddon Eagle', 168750, 30, 600),
+        m('Shadow Figure', 235750, 30, 850),
+        m('Meta Figure', 375000, 30, 1250),
+        m('???????', 297500, 30, 1100),
+        m('Rogue Android', 329500, 30, 1125),
+        m('DJ Reaper', 210000, 30, 900),
+        m('Wa, the Curious', 812500, 30, 1750)
+      ],
+      bosses: [
+        m('Duality Reaper', 2000000, 45, 5500),
+        m('Za, the Eldest', 2500000, 45, 6000),
+        m('Ra, the Enlightener', 1375000, 45, 3000),
+        m('Ka, the Mischief', 1750000, 45, 3500),
+        m('Da, the Demeanor', 2125000, 45, 4000),
+        m('Saurus, the All-Seeing', 4500000, 90, 32000)
+      ]
+    },
+    {
+      id: 'f12',
+      floor: 12,
+      name: 'Sector-235',
+      level: '200–400',
+      mobs: [
+        m('Crystal Lizard', 250000, 30, 600),
+        m('Radio Slug', 310000, 30, 900),
+        m('Newborn Abomination', 630000, 30, 1200),
+        m('Bat', 840000, 30, 1800),
+        m('Scav', 400000, 30, 1000),
+        m('Elite Scav', 725000, 30, 1350),
+        m('Failed Experiment', 100000, 30, 500),
+        m('Blue Failed Experiment', 100000, 30, 600),
+        m('Orange Failed Experiment', 125000, 30, 600)
+      ],
+      bosses: [
+        m('Radioactive Experiment', 7000000, 90, 25000),
+        m('Warlord', 7500000, 45, 35000),
+        m('Limor the Devourer', 8750000, 45, 20000),
+        m('C-618 Uriotol, The Forgotten Hunter', 4000000, 45, 25000),
+        m('Suspended Unborn', 15000000, 90, 40000)
+      ]
+    },
+    {
+      id: 'atheon',
+      name: "Atheon's Realm",
+      level: '325+',
+      mobs: [],
+      bosses: [
+        m('Atheon', 95000000, 90, 110000),
+        m('Corrupted Atheon', 190000000, 'corrupted', 220000)
+      ]
+    }
+  ];
+
+  /* ---------- Локализация ---------- */
+
+  var DEFAULT_LANG = 'en';
+  var LANG_KEY = 'sb2calc.lang';
+
+  var I18N = {
+    en: {
+      metaTitle: 'Swordburst 2 XP Calculator',
+      heroTitleA: 'XP',
+      heroTitleB: 'calculator',
+      heroText: 'Find out how many mobs you need to kill to reach your target level — and how much XP is left.',
+      language: 'Language',
+      inputsTitle: 'Your data',
+      currentLevel: 'Current level',
+      currentXP: 'XP on this level',
+      targetLevel: 'Target level',
+      targetHint: 'Empty = next level',
+      targetPlaceholder: 'e.g. 50',
+      quickTargets: 'Quick targets:',
+      quick1: '+1 level',
+      quick5: '+5 levels',
+      quick10: '+10 levels',
+      quickAria: 'Quick targets',
+      floor: 'Floor',
+      mobSource: 'Mob / XP source',
+      mobsGroup: 'Mobs',
+      bossesGroup: 'Bosses',
+      custom: 'Custom value',
+      hp: 'HP',
+      respawn: 'Respawn',
+      wikiLabel: 'On the wiki:',
+      xpPerMob: 'XP per mob',
+      xpPerMobHint: 'Enter any value if farming a boss or using boosts.',
+      boostLabel: 'XP Boost',
+      calc: 'Calculate',
+      errorTitle: 'Check the data:',
+      errTarget: 'Target level must be higher than current',
+      errXP: 'Enter XP per mob',
+      resultsTitle: 'Results',
+      autoRecalc: 'auto-recalc',
+      xpToGoal: 'XP to goal',
+      mobsToKill: 'Mobs to kill',
+      levelsGained: 'Levels gained',
+      progress: 'Progress to goal',
+      unitPcs: 'pcs.',
+      nextLevel: 'to the next level',
+      alreadyEnough: 'You already have enough XP for this goal',
+      haveOf: 'Have {done} of {total} XP',
+      noKills: 'No need to kill anything',
+      perMob: '{xp} XP per mob',
+      levelRow: '{n} {word} · level {current} → {target}',
+      levelArrow: 'Level {current} → {target}',
+      levelShort: 'Lv. {n}',
+      levelOne: 'level',
+      levelFew: 'levels',
+      levelMany: 'levels',
+      corruptedSpawn: '33% chance instead of Atheon',
+      secUnit: 'sec',
+      minUnit: 'min',
+      themeLabel: 'Theme',
+      themeDark: 'Dark',
+      themeLight: 'Light',
+      perMobBoosted: '{xp} XP per mob (x{mult})',
+      footer: 'SB2 formula: XP to next level = 3 × n × (n + 1) + 1 · Max level — 450',
+      playGame: 'Play Swordburst 2',
+      joinDiscord: 'Join Discord',
+      subscribeDevs: 'Subscribe to developers:'
+    },
+    be: {
+      metaTitle: 'Калькулятар досведу Swordburst 2',
+      heroTitleA: 'Калькулятар',
+      heroTitleB: 'досведу',
+      heroText: 'Даведайся, колькі мобаў трэба забіць да мэтавага ўзроўню і колькі досведу засталося набраць.',
+      language: 'Мова',
+      inputsTitle: 'Твае даныя',
+      currentLevel: 'Бягучы ўзровень',
+      currentXP: 'Досвед на гэтым узроўні',
+      targetLevel: 'Мэтавы ўзровень',
+      targetHint: 'Пуста = наступны ўзровень',
+      targetPlaceholder: 'Напрыклад, 50',
+      quickTargets: 'Хуткія мэты:',
+      quick1: '+1 узровень',
+      quick5: '+5 узроўняў',
+      quick10: '+10 узроўняў',
+      quickAria: 'Хуткія мэты',
+      floor: 'Паверх',
+      mobSource: 'Моб / крыніца досведу',
+      mobsGroup: 'Мобы',
+      bossesGroup: 'Босы',
+      custom: 'Сваё значэнне',
+      hp: 'HP',
+      respawn: 'Рэспаўн',
+      wikiLabel: 'На вікі:',
+      xpPerMob: 'Досвед за аднаго моба',
+      xpPerMobHint: 'Можна ўвесці любы лік, калі фарміш боса або выкарыстоўваеш бусты.',
+      boostLabel: 'Буст досведу',
+      calc: 'Разлічыць',
+      errorTitle: 'Правер даныя:',
+      errTarget: 'Мэтавы ўзровень павінен быць вышэй за бягучы',
+      errXP: 'Укажы досвед за моба',
+      resultsTitle: 'Вынікі разліку',
+      autoRecalc: 'аўта-пералік',
+      xpToGoal: 'Досвед да мэты',
+      mobsToKill: 'Мобаў забіць',
+      levelsGained: 'Колькі ўзроўняў атрымаеш',
+      progress: 'Прагрэс да мэты',
+      unitPcs: 'шт.',
+      nextLevel: 'да наступнага ўзроўню',
+      alreadyEnough: 'Досведу ўжо дастаткова для мэты',
+      haveOf: 'Ужо ёсць {done} з {total} XP',
+      noKills: 'Забіваць нікога не трэба',
+      perMob: 'Па {xp} XP за моба',
+      levelRow: '{n} {word} · узровень {current} → {target}',
+      levelArrow: 'Узровень {current} → {target}',
+      levelShort: 'Узр. {n}',
+      levelOne: 'узровень',
+      levelFew: 'узроўні',
+      levelMany: 'узроўняў',
+      corruptedSpawn: '33% шанц замест Atheon',
+      secUnit: 'с',
+      minUnit: 'хв',
+      themeLabel: 'Тэма',
+      themeDark: 'Цёмная',
+      themeLight: 'Светлая',
+      perMobBoosted: 'Па {xp} XP за моба (x{mult})',
+      footer: 'Формула SB2: XP да наступнага ўзроўню = 3 × n × (n + 1) + 1 · Максімальны ўзровень — 450',
+      playGame: 'Гуляць у Swordburst 2',
+      joinDiscord: 'Далучыцца да Discord',
+      subscribeDevs: 'Падпішыцеся на распрацоўшчыкаў:'
+    },
+    ru: {
+      metaTitle: 'Калькулятор опыта Swordburst 2',
+      heroTitleA: 'Калькулятор',
+      heroTitleB: 'опыта',
+      heroText: 'Узнай, сколько мобов нужно убить до целевого уровня и сколько опыта осталось набрать.',
+      language: 'Язык',
+      inputsTitle: 'Твои данные',
+      currentLevel: 'Текущий уровень',
+      currentXP: 'Опыт на этом уровне',
+      targetLevel: 'Целевой уровень',
+      targetHint: 'Пусто = следующий уровень',
+      targetPlaceholder: 'Например, 50',
+      quickTargets: 'Быстрые цели:',
+      quick1: '+1 уровень',
+      quick5: '+5 уровней',
+      quick10: '+10 уровней',
+      quickAria: 'Быстрые цели',
+      floor: 'Этаж',
+      mobSource: 'Моб / источник опыта',
+      mobsGroup: 'Мобы',
+      bossesGroup: 'Боссы',
+      custom: 'Своё значение',
+      hp: 'HP',
+      respawn: 'Респавн',
+      wikiLabel: 'На вики:',
+      xpPerMob: 'Опыт за одного моба',
+      xpPerMobHint: 'Можно ввести любое число, если фармишь босса или используешь бусты.',
+      boostLabel: 'Буст опыта',
+      calc: 'Рассчитать',
+      errorTitle: 'Проверь данные:',
+      errTarget: 'Целевой уровень должен быть выше текущего',
+      errXP: 'Укажи опыт за моба',
+      resultsTitle: 'Результаты расчёта',
+      autoRecalc: 'авто-пересчёт',
+      xpToGoal: 'Опыт до цели',
+      mobsToKill: 'Мобов убить',
+      levelsGained: 'Сколько уровней получишь',
+      progress: 'Прогресс до цели',
+      unitPcs: 'шт.',
+      nextLevel: 'до следующего уровня',
+      alreadyEnough: 'Опыта уже достаточно для цели',
+      haveOf: 'Уже есть {done} из {total} XP',
+      noKills: 'Убивать никого не нужно',
+      perMob: 'По {xp} XP за моба',
+      levelRow: '{n} {word} · уровень {current} → {target}',
+      levelArrow: 'Уровень {current} → {target}',
+      levelShort: 'Ур. {n}',
+      levelOne: 'уровень',
+      levelFew: 'уровня',
+      levelMany: 'уровней',
+      corruptedSpawn: '33% шанс вместо Atheon',
+      secUnit: 'с',
+      minUnit: 'мин',
+      themeLabel: 'Тема',
+      themeDark: 'Тёмная',
+      themeLight: 'Светлая',
+      perMobBoosted: 'По {xp} XP за моба (x{mult})',
+      footer: 'Формула SB2: XP до следующего уровня = 3 × n × (n + 1) + 1 · Максимальный уровень — 450',
+      playGame: 'Играть в Swordburst 2',
+      joinDiscord: 'Присоединиться к Discord',
+      subscribeDevs: 'Подпишитесь на разработчиков:'
+    },
+    uk: {
+      metaTitle: 'Калькулятор досвіду Swordburst 2',
+      heroTitleA: 'Калькулятор',
+      heroTitleB: 'досвіду',
+      heroText: 'Дізнайся, скільки мобів треба вбити до цільового рівня і скільки досвіду залишилося набрати.',
+      language: 'Мова',
+      inputsTitle: 'Твої дані',
+      currentLevel: 'Поточний рівень',
+      currentXP: 'Досвід на цьому рівні',
+      targetLevel: 'Цільовий рівень',
+      targetHint: 'Порожньо = наступний рівень',
+      targetPlaceholder: 'Наприклад, 50',
+      quickTargets: 'Швидкі цілі:',
+      quick1: '+1 рівень',
+      quick5: '+5 рівнів',
+      quick10: '+10 рівнів',
+      quickAria: 'Швидкі цілі',
+      floor: 'Поверх',
+      mobSource: 'Моб / джерело досвіду',
+      mobsGroup: 'Моби',
+      bossesGroup: 'Боси',
+      custom: 'Своє значення',
+      hp: 'HP',
+      respawn: 'Респавн',
+      wikiLabel: 'На вікі:',
+      xpPerMob: 'Досвід за одного моба',
+      xpPerMobHint: 'Можна ввести будь-яке число, якщо фармиш боса або використовуєш бусти.',
+      boostLabel: 'Буст досвіду',
+      calc: 'Розрахувати',
+      errorTitle: 'Перевір дані:',
+      errTarget: 'Цільовий рівень має бути вищим за поточний',
+      errXP: 'Вкажи досвід за моба',
+      resultsTitle: 'Результати розрахунку',
+      autoRecalc: 'авто-перерахунок',
+      xpToGoal: 'Досвід до цілі',
+      mobsToKill: 'Мобів убити',
+      levelsGained: 'Скільки рівнів отримаєш',
+      progress: 'Прогрес до цілі',
+      unitPcs: 'шт.',
+      nextLevel: 'до наступного рівня',
+      alreadyEnough: 'Досвіду вже достатньо для цілі',
+      haveOf: 'Уже є {done} з {total} XP',
+      noKills: 'Вбивати нікого не потрібно',
+      perMob: 'По {xp} XP за моба',
+      levelRow: '{n} {word} · рівень {current} → {target}',
+      levelArrow: 'Рівень {current} → {target}',
+      levelShort: 'Рів. {n}',
+      levelOne: 'рівень',
+      levelFew: 'рівні',
+      levelMany: 'рівнів',
+      corruptedSpawn: '33% шанс замість Atheon',
+      secUnit: 'с',
+      minUnit: 'хв',
+      themeLabel: 'Тема',
+      themeDark: 'Темна',
+      themeLight: 'Світла',
+      perMobBoosted: 'По {xp} XP за моба (x{mult})',
+      footer: 'Формула SB2: XP до наступного рівня = 3 × n × (n + 1) + 1 · Максимальний рівень — 450',
+      playGame: 'Грати в Swordburst 2',
+      joinDiscord: 'Приєднатися до Discord',
+      subscribeDevs: 'Підпишіться на розробників:'
+    },
+    kk: {
+      metaTitle: 'Swordburst 2 XP калькуляторы',
+      heroTitleA: 'XP',
+      heroTitleB: 'калькуляторы',
+      heroText: 'Мақсатты деңгейге дейін қанша моб өлтіру керектігін және қанша XP қалғанын біл.',
+      language: 'Тіл',
+      inputsTitle: 'Сенің деректерің',
+      currentLevel: 'Ағымдағы деңгей',
+      currentXP: 'Осы деңгейдегі XP',
+      targetLevel: 'Мақсатты деңгей',
+      targetHint: 'Бос қалдырсаң = келесі деңгей',
+      targetPlaceholder: 'Мысалы, 50',
+      quickTargets: 'Жылдам мақсаттар:',
+      quick1: '+1 деңгей',
+      quick5: '+5 деңгей',
+      quick10: '+10 деңгей',
+      quickAria: 'Жылдам мақсаттар',
+      floor: 'Қабат',
+      mobSource: 'Моб / XP көзі',
+      mobsGroup: 'Мобтар',
+      bossesGroup: 'Босстар',
+      custom: 'Өз мәні',
+      hp: 'HP',
+      respawn: 'Респавн',
+      wikiLabel: 'Викиде:',
+      xpPerMob: 'Бір моб үшін XP',
+      xpPerMobHint: 'Бос фармдасаң немесе буст қолдансаң, кез келген санды енгіз.',
+      boostLabel: 'XP бусті',
+      calc: 'Есептеу',
+      errorTitle: 'Деректерді тексер:',
+      errTarget: 'Мақсатты деңгей ағымдағыдан жоғары болуы керек',
+      errXP: 'Моб үшін XP енгіз',
+      resultsTitle: 'Есептеу нәтижелері',
+      autoRecalc: 'авто-есептеу',
+      xpToGoal: 'Мақсатқа дейінгі XP',
+      mobsToKill: 'Өлтіру керек моб',
+      levelsGained: 'Қанша деңгей аласың',
+      progress: 'Мақсатқа прогресс',
+      unitPcs: 'дана',
+      nextLevel: 'келесі деңгейге дейін',
+      alreadyEnough: 'Мақсатқа XP жеткілікті',
+      haveOf: '{total} XP ішінен {done} бар',
+      noKills: 'Ешкімді өлтіру қажет емес',
+      perMob: 'Бір мобқа {xp} XP',
+      levelRow: '{n} {word} · деңгей {current} → {target}',
+      levelArrow: 'Деңгей {current} → {target}',
+      levelShort: 'Деңг. {n}',
+      levelOne: 'деңгей',
+      levelFew: 'деңгей',
+      levelMany: 'деңгей',
+      corruptedSpawn: 'Atheon орнына 33% шанс',
+      secUnit: 'с',
+      minUnit: 'мин',
+      themeLabel: 'Тақырып',
+      themeDark: 'Қараңғы',
+      themeLight: 'Ашық',
+      perMobBoosted: 'Бір мобқа {xp} XP (x{mult})',
+      footer: 'SB2 формуласы: келесі деңгейге XP = 3 × n × (n + 1) + 1 · Максималды деңгей — 450',
+      playGame: 'Swordburst 2 ойнау',
+      joinDiscord: 'Discord-қа қосылу',
+      subscribeDevs: 'Әзірлеушілерге жазылыңыз:'
+    }
+  };
+
+  var currentLang = DEFAULT_LANG;
+
+  function t(key, vars) {
+    var dict = I18N[currentLang] || I18N[DEFAULT_LANG];
+    var text = dict[key];
+    if (text == null) text = I18N[DEFAULT_LANG][key];
+    if (text == null) text = key;
+    if (vars) {
+      Object.keys(vars).forEach(function (name) {
+        text = text.split('{' + name + '}').join(String(vars[name]));
+      });
+    }
+    return text;
+  }
+
+  var currentLevelEl = document.getElementById('currentLevel');
+  var currentXPEl = document.getElementById('currentXP');
+  var targetLevelEl = document.getElementById('targetLevel');
+  var xpPerMobEl = document.getElementById('xpPerMob');
+  var boostMultiplierEl = document.getElementById('boostMultiplier');
+  var floorEl = document.getElementById('floor');
+  var mobEl = document.getElementById('mob');
+  var mobMetaEl = document.getElementById('mobMeta');
+  var mobHPEl = document.getElementById('mobHP');
+  var mobRespawnEl = document.getElementById('mobRespawn');
+  var mobWikiRowEl = document.getElementById('mobWikiRow');
+  var mobWikiEl = document.getElementById('mobWiki');
+  var langSelectEl = document.getElementById('langSelect');
+  var themeToggleEl = document.getElementById('themeToggle');
+  var themeIconEl = document.getElementById('themeIcon');
+
+  var currentTheme = 'dark';
+
+  var LS_FLOOR = 'sb2calc.lastFloor';
+  var LS_MOB = 'sb2calc.lastMob';
+  var LS_CUSTOM_XP = 'sb2calc.lastCustomXP';
+  var LS_BOOST = 'sb2calc.boost';
+  var LS_THEME = 'sb2calc.theme';
+
+  function lsGet(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  function lsSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) {}
+  }
+
+  function lsRemove(key) {
+    try { localStorage.removeItem(key); } catch (e) {}
+  }
+
+  var activeMobs = [];
+
+  var errorBox = document.getElementById('errorBox');
+  var errorList = document.getElementById('errorList');
+  var resultGrid = document.getElementById('resultGrid');
+  var resultsHead = document.getElementById('resultsTitle');
+
+  var xpNeededEl = document.getElementById('xpNeeded');
+  var xpSubEl = document.getElementById('xpSub');
+  var mobsCountEl = document.getElementById('mobsCount');
+  var mobsSubEl = document.getElementById('mobsSub');
+  var levelsGainedEl = document.getElementById('levelsGained');
+  var levelsSubEl = document.getElementById('levelsSub');
+  var progressPctEl = document.getElementById('progressPct');
+  var progressBarEl = document.getElementById('progressBar');
+  var barFillEl = document.getElementById('barFill');
+  var progressFromEl = document.getElementById('progressFrom');
+  var progressXPEl = document.getElementById('progressXP');
+  var progressToEl = document.getElementById('progressTo');
+
+  function xpToNext(n) {
+    return 3 * n * (n + 1) + 1;
+  }
+
+  function totalXP(level) {
+    if (level <= 1) return 0;
+    var n = level - 1;
+    return n * (n + 1) * (n + 2) + n;
+  }
+
+  function fmt(value) {
+    var n = Math.round(Number(value) || 0);
+    var sign = n < 0 ? '-' : '';
+    var digits = Math.abs(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return sign + digits;
+  }
+
+  function formatPercent(value) {
+    if (value >= 100) return '100%';
+    var rounded = value >= 10 ? Math.round(value) : Math.round(value * 10) / 10;
+    return rounded + '%';
+  }
+
+  function plural(n, one, few, many) {
+    var mod10 = n % 10;
+    var mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return one;
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+    return many;
+  }
+
+  function levelWord(n) {
+    return plural(n, t('levelOne'), t('levelFew'), t('levelMany'));
+  }
+
+  function formatRespawn(value) {
+    if (value === 'corrupted') return t('corruptedSpawn');
+    if (typeof value === 'string') return value;
+    var mins = Math.floor(value / 60);
+    var secs = value % 60;
+    var minPart = mins ? mins + ' ' + t('minUnit') : '';
+    var secPart = secs ? secs + ' ' + t('secUnit') : (mins ? '' : '0 ' + t('secUnit'));
+    return (minPart + (minPart && secPart ? ' ' : '') + secPart).trim();
+  }
+
+  function clampLevel(value, fallback) {
+    var n = parseFloat(value);
+    if (!isFinite(n)) return fallback;
+    return Math.min(MAX_LEVEL, Math.max(1, Math.round(n)));
+  }
+
+  function showErrors(messages) {
+    errorList.textContent = '';
+    messages.forEach(function (message) {
+      var li = document.createElement('li');
+      li.textContent = message;
+      errorList.appendChild(li);
+    });
+    errorBox.hidden = false;
+  }
+
+  function hideErrors() {
+    errorBox.hidden = true;
+    errorList.textContent = '';
+  }
+
+  function resetResults() {
+    xpNeededEl.textContent = '—';
+    xpSubEl.textContent = '—';
+    mobsCountEl.textContent = '—';
+    mobsSubEl.textContent = '—';
+    levelsGainedEl.textContent = '—';
+    levelsGainedEl.classList.remove('is-text');
+    levelsSubEl.textContent = '—';
+    progressPctEl.textContent = '—';
+    progressFromEl.textContent = t('levelShort', { n: '—' });
+    progressXPEl.textContent = '— / — XP';
+    progressToEl.textContent = t('levelShort', { n: '—' });
+    barFillEl.style.width = '0%';
+    progressBarEl.setAttribute('aria-valuenow', '0');
+    resultGrid.classList.add('is-invalid');
+  }
+
+  function calculate() {
+    var errors = [];
+
+    var currentLevel = clampLevel(currentLevelEl.value, 1);
+
+    var currentXPRaw = parseFloat(currentXPEl.value);
+    var currentXP = isFinite(currentXPRaw) ? Math.max(0, Math.round(currentXPRaw)) : 0;
+
+    var targetRaw = targetLevelEl.value.trim();
+    var targetIsImplicit = targetRaw === '';
+    var targetLevel = targetIsImplicit ? currentLevel + 1 : parseFloat(targetRaw);
+    if (!isFinite(targetLevel)) {
+      targetLevel = currentLevel + 1;
+      targetIsImplicit = true;
+    }
+    targetLevel = Math.min(MAX_LEVEL, Math.max(1, Math.round(targetLevel)));
+
+    var xpPerMob = parseFloat(xpPerMobEl.value);
+    var boostMultiplier = parseFloat(boostMultiplierEl.value) || 1;
+
+    if (targetLevel <= currentLevel) {
+      errors.push(t('errTarget'));
+    }
+    if (!isFinite(xpPerMob) || xpPerMob <= 0) {
+      errors.push(t('errXP'));
+    }
+
+    if (errors.length) {
+      showErrors(errors);
+      resetResults();
+      return;
+    }
+
+    hideErrors();
+    resultGrid.classList.remove('is-invalid');
+
+    var effectiveXPPerMob = xpPerMob * boostMultiplier;
+    var pathXP = totalXP(targetLevel) - totalXP(currentLevel);
+    var xpNeeded = Math.max(0, pathXP - currentXP);
+    var mobs = Math.ceil(xpNeeded / effectiveXPPerMob);
+    var percent = pathXP > 0 ? Math.min(100, Math.max(0, (currentXP / pathXP) * 100)) : 0;
+    var doneXP = Math.min(currentXP, pathXP);
+
+    xpNeededEl.textContent = fmt(xpNeeded);
+    xpSubEl.textContent = xpNeeded === 0
+      ? t('alreadyEnough')
+      : t('haveOf', { done: fmt(doneXP), total: fmt(pathXP) });
+
+    mobsCountEl.textContent = fmt(mobs);
+    mobsSubEl.textContent = mobs === 0
+      ? t('noKills')
+      : boostMultiplier > 1
+        ? t('perMobBoosted', { xp: fmt(xpPerMob), mult: boostMultiplier })
+        : t('perMob', { xp: fmt(xpPerMob) });
+
+    if (targetIsImplicit) {
+      levelsGainedEl.textContent = t('nextLevel');
+      levelsGainedEl.classList.add('is-text');
+      levelsSubEl.textContent = t('levelArrow', { current: currentLevel, target: targetLevel });
+    } else {
+      var gained = targetLevel - currentLevel;
+      levelsGainedEl.classList.remove('is-text');
+      levelsGainedEl.textContent = '+' + gained;
+      levelsSubEl.textContent = t('levelRow', {
+        n: gained,
+        word: levelWord(gained),
+        current: currentLevel,
+        target: targetLevel
+      });
+    }
+
+    progressPctEl.textContent = formatPercent(percent);
+    barFillEl.style.width = percent + '%';
+    progressBarEl.setAttribute('aria-valuenow', String(Math.round(percent)));
+    progressFromEl.textContent = t('levelShort', { n: currentLevel });
+    progressXPEl.textContent = fmt(doneXP) + ' / ' + fmt(pathXP) + ' XP';
+    progressToEl.textContent = t('levelShort', { n: targetLevel });
+  }
+
+  function getFloor() {
+    for (var i = 0; i < FLOORS.length; i++) {
+      if (FLOORS[i].id === floorEl.value) return FLOORS[i];
+    }
+    return FLOORS[0];
+  }
+
+  function updateMobInfo(mob) {
+    if (!mob) {
+      mobMetaEl.hidden = true;
+      mobHPEl.textContent = '—';
+      mobRespawnEl.textContent = '—';
+      mobWikiRowEl.hidden = true;
+      mobWikiEl.textContent = '—';
+      mobWikiEl.removeAttribute('href');
+      return;
+    }
+
+    mobHPEl.textContent = fmt(mob.hp);
+    mobRespawnEl.textContent = formatRespawn(mob.respawn);
+    mobMetaEl.hidden = false;
+
+    mobWikiEl.textContent = mob.name;
+    mobWikiEl.href = 'https://swordburst2.fandom.com/wiki/' + encodeURIComponent(mob.name.replace(/ /g, '_'));
+    mobWikiRowEl.hidden = false;
+  }
+
+  function addMobGroup(label, list) {
+    if (!list.length) return;
+    var group = document.createElement('optgroup');
+    group.label = label;
+    list.forEach(function (mob) {
+      var index = activeMobs.length;
+      activeMobs.push(mob);
+      var option = document.createElement('option');
+      option.value = String(index);
+      option.textContent = mob.name + ' — ' + fmt(mob.xp) + ' XP';
+      group.appendChild(option);
+    });
+    mobEl.appendChild(group);
+  }
+
+  function buildMobs(preserve) {
+    var floor = getFloor();
+    var prevName = null;
+    var prevCustom = false;
+    var prevXP = xpPerMobEl.value;
+
+    if (preserve) {
+      if (mobEl.value === 'custom') {
+        prevCustom = true;
+      } else {
+        var prevMob = activeMobs[Number(mobEl.value)];
+        prevName = prevMob ? prevMob.name : null;
+      }
+    }
+
+    activeMobs = [];
+    mobEl.textContent = '';
+
+    addMobGroup(t('mobsGroup'), floor.mobs);
+    addMobGroup(t('bossesGroup'), floor.bosses);
+
+    var custom = document.createElement('option');
+    custom.value = 'custom';
+    custom.textContent = t('custom');
+    mobEl.appendChild(custom);
+
+    if (prevCustom) {
+      mobEl.value = 'custom';
+      var savedCustomXP = prevXP !== '' ? prevXP : lsGet(LS_CUSTOM_XP);
+      if (savedCustomXP) xpPerMobEl.value = savedCustomXP;
+      updateMobInfo(null);
+      return;
+    }
+
+    if (prevName) {
+      for (var i = 0; i < activeMobs.length; i++) {
+        if (activeMobs[i].name === prevName) {
+          mobEl.value = String(i);
+          xpPerMobEl.value = String(activeMobs[i].xp);
+          updateMobInfo(activeMobs[i]);
+          return;
+        }
+      }
+    }
+
+    if (activeMobs.length) {
+      mobEl.value = '0';
+      xpPerMobEl.value = String(activeMobs[0].xp);
+      updateMobInfo(activeMobs[0]);
+    } else {
+      mobEl.value = 'custom';
+      var fallbackXP = prevXP !== '' ? prevXP : lsGet(LS_CUSTOM_XP);
+      if (fallbackXP) xpPerMobEl.value = fallbackXP;
+      updateMobInfo(null);
+    }
+  }
+
+  function buildFloors() {
+    var selected = floorEl.value;
+    floorEl.textContent = '';
+    FLOORS.forEach(function (floor) {
+      var option = document.createElement('option');
+      option.value = floor.id;
+      option.textContent = (floor.floor ? floor.floor + ' · ' : '') +
+        floor.name + ' (' + floor.level + ')';
+      floorEl.appendChild(option);
+    });
+    var exists = FLOORS.some(function (floor) { return floor.id === selected; });
+    floorEl.value = exists ? selected : FLOORS[0].id;
+  }
+
+  function applyTheme(theme) {
+    currentTheme = theme === 'light' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+
+    themeIconEl.textContent = currentTheme === 'light' ? '☀️' : '🌙';
+
+    var label = t('themeLabel') + ': ' + t(currentTheme === 'light' ? 'themeLight' : 'themeDark');
+    themeToggleEl.setAttribute('aria-label', label);
+    themeToggleEl.title = label;
+
+    var metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) {
+      metaTheme.setAttribute('content', currentTheme === 'light' ? '#f4f5fa' : '#1a1a2e');
+    }
+
+    var metaScheme = document.querySelector('meta[name="color-scheme"]');
+    if (metaScheme) {
+      metaScheme.setAttribute('content', currentTheme === 'light' ? 'light' : 'dark');
+    }
+
+    lsSet(LS_THEME, currentTheme);
+  }
+
+  function applyLanguage(lang) {
+    if (!I18N[lang]) lang = DEFAULT_LANG;
+    currentLang = lang;
+
+    document.documentElement.lang = lang;
+    document.title = t('metaTitle');
+
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+      el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+    });
+    document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
+      el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label')));
+    });
+
+    langSelectEl.value = lang;
+    buildFloors();
+    buildMobs(true);
+    calculate();
+    applyTheme(currentTheme);
+
+    lsSet(LANG_KEY, lang);
+  }
+
+  function syncMobSelect() {
+    if (mobEl.value === 'custom') {
+      updateMobInfo(null);
+      return;
+    }
+    var mob = activeMobs[Number(mobEl.value)];
+    var value = parseFloat(xpPerMobEl.value);
+    if (!mob || !isFinite(value) || value !== mob.xp) {
+      mobEl.value = 'custom';
+      updateMobInfo(null);
+    }
+  }
+
+  function onFieldInput() {
+    if (this === xpPerMobEl) {
+      syncMobSelect();
+      if (mobEl.value === 'custom') lsSet(LS_CUSTOM_XP, xpPerMobEl.value);
+    }
+    calculate();
+  }
+
+  [currentLevelEl, currentXPEl, targetLevelEl, xpPerMobEl].forEach(function (el) {
+    el.addEventListener('input', onFieldInput);
+  });
+
+  langSelectEl.addEventListener('change', function () {
+    applyLanguage(langSelectEl.value);
+  });
+
+  themeToggleEl.addEventListener('click', function () {
+    applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+  });
+
+  boostMultiplierEl.addEventListener('change', function () {
+    lsSet(LS_BOOST, boostMultiplierEl.value);
+    calculate();
+  });
+
+  floorEl.addEventListener('change', function () {
+    buildMobs(false);
+    lsSet(LS_FLOOR, floorEl.value);
+    lsRemove(LS_MOB);
+    calculate();
+  });
+
+  mobEl.addEventListener('change', function () {
+    lsSet(LS_MOB, mobEl.value);
+    if (mobEl.value === 'custom') {
+      lsSet(LS_CUSTOM_XP, xpPerMobEl.value);
+      updateMobInfo(null);
+      xpPerMobEl.focus({ preventScroll: true });
+      xpPerMobEl.select();
+      calculate();
+      return;
+    }
+    var mob = activeMobs[Number(mobEl.value)];
+    if (mob) {
+      xpPerMobEl.value = String(mob.xp);
+      updateMobInfo(mob);
+    }
+    calculate();
+  });
+
+  document.querySelectorAll('.chip[data-step]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var current = clampLevel(currentLevelEl.value, 1);
+      var next = Math.min(MAX_LEVEL, current + Number(button.dataset.step));
+      targetLevelEl.value = String(next);
+      calculate();
+    });
+  });
+
+  document.getElementById('calcBtn').addEventListener('click', function () {
+    calculate();
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      resultsHead.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  currentLevelEl.addEventListener('blur', function () {
+    currentLevelEl.value = String(clampLevel(currentLevelEl.value, 1));
+    calculate();
+  });
+
+  targetLevelEl.addEventListener('blur', function () {
+    if (targetLevelEl.value.trim() === '') {
+      calculate();
+      return;
+    }
+    var value = clampLevel(targetLevelEl.value, 1);
+    targetLevelEl.value = String(value);
+    calculate();
+  });
+
+  var savedLang = lsGet(LANG_KEY);
+
+  buildFloors();
+  buildMobs(false);
+
+  var savedFloor = lsGet(LS_FLOOR);
+  if (savedFloor && FLOORS.some(function (floor) { return floor.id === savedFloor; })) {
+    floorEl.value = savedFloor;
+    buildMobs(true);
+  }
+
+  var savedMob = lsGet(LS_MOB);
+  if (savedMob === 'custom') {
+    mobEl.value = 'custom';
+    var savedCustomXP = lsGet(LS_CUSTOM_XP);
+    if (savedCustomXP) xpPerMobEl.value = savedCustomXP;
+    updateMobInfo(null);
+  } else if (savedMob !== null) {
+    var savedIndex = Number(savedMob);
+    if (isFinite(savedIndex) && savedIndex >= 0 && savedIndex < activeMobs.length) {
+      mobEl.value = String(savedIndex);
+      xpPerMobEl.value = String(activeMobs[savedIndex].xp);
+      updateMobInfo(activeMobs[savedIndex]);
+    }
+  }
+
+  var savedBoost = lsGet(LS_BOOST);
+  if (savedBoost === '1' || savedBoost === '2' || savedBoost === '3') {
+    boostMultiplierEl.value = savedBoost;
+  }
+
+  var savedTheme = lsGet(LS_THEME);
+  if (savedTheme !== 'dark' && savedTheme !== 'light') {
+    savedTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark';
+  }
+  applyTheme(savedTheme);
+
+  applyLanguage(savedLang && I18N[savedLang] ? savedLang : DEFAULT_LANG);
+})();
+</script>
+</body>
+</html>
